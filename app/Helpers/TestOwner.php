@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use Hexbatch\Things\Helpers\IThingOwner;
+use Hexbatch\Things\Interfaces\IThingOwner;
 
 class TestOwner implements IThingOwner
 {

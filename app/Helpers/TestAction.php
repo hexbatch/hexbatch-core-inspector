@@ -4,9 +4,9 @@ namespace App\Helpers;
 
 use BlueM\Tree;
 use Carbon\Carbon;
-use Hexbatch\Things\Helpers\IThingAction;
-use Hexbatch\Things\Helpers\IThingOwner;
-use Hexbatch\Things\Models\Enums\TypeOfThingStatus;
+use Hexbatch\Things\Enums\TypeOfThingStatus;
+use Hexbatch\Things\Interfaces\IThingAction;
+use Hexbatch\Things\Interfaces\IThingOwner;
 
 class TestAction implements IThingAction
 {
@@ -94,5 +94,35 @@ class TestAction implements IThingAction
     public static function resolveAction(int $action_id): IThingAction
     {
         // TODO: Implement resolveAction() method.
+    }
+
+    public function isActionComplete(): bool
+    {
+        // TODO: Implement isActionComplete() method.
+    }
+
+    public function isActionError(): bool
+    {
+        // TODO: Implement isActionError() method.
+    }
+
+    public function isActionSuccess(): bool
+    {
+        // TODO: Implement isActionSuccess() method.
+    }
+
+    public function getActionRef(): string
+    {
+        // TODO: Implement getActionRef() method.
+    }
+
+    public function getActionTags(): ?array
+    {
+        // TODO: Implement getActionTags() method.
+    }
+
+    public function getInitialConstantData(): ?array
+    {
+        // TODO: Implement getInitialConstantData() method.
     }
 }
