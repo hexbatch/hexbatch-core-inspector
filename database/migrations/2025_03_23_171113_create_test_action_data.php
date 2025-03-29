@@ -16,7 +16,8 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('owner_user_id')
-                ->nullable(false)
+                ->nullable()
+                ->default(null)
                 ->comment("The owner")
                 ->index()
                 ->constrained('users')

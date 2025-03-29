@@ -2,18 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\TypeOfTestActionStatus;
 use ArrayObject;
 use BlueM\Tree;
 use Carbon\Carbon;
-use Hexbatch\Things\Enums\TypeOfHookerStatus;
-use Hexbatch\Things\Enums\TypeOfThingHookMode;
 use Hexbatch\Things\Interfaces\IThingAction;
 use Hexbatch\Things\Interfaces\IThingOwner;
 use Hexbatch\Things\Models\Thing;
 use Hexbatch\Things\Models\ThingHook;
-use Hexbatch\Things\Models\ThingHooker;
 use Hexbatch\Things\Models\ThingSetting;
 use Hexbatch\Things\Models\ThingStat;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,7 +17,6 @@ use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\Log;
 
 
@@ -59,7 +54,29 @@ class TestActionDatum extends Model implements IThingAction
     protected $table = 'test_action_data';
     public $timestamps = false;
 
-    const ACTION_TYPE = 'TestActionDatum';
+    const ACTION_TYPE = 'tester';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'parent_action_id',
+        'test_action_priority',
+        'test_action_start_offset_seconds',
+        'test_action_invalid_offset_seconds',
+        'test_action_data_row_limit',
+        'test_action_async',
+        'test_action_constant',
+        'test_action_tags',
+        'test_action_color',
+        'test_action_type',
+        'test_action_name',
+        'parent_key',
+        'test_action_run_class',
+        'test_action_run_function'
+    ];
 
     /**
      * Get the attributes that should be cast.
@@ -181,7 +198,7 @@ class TestActionDatum extends Model implements IThingAction
      * @uses static::user_owner()
      * @return IThingOwner
      */
-    public function getActionOwner(): IThingOwner
+    public function getActionOwner(): ?IThingOwner
     {
         return $this->user_owner;
     }
@@ -265,6 +282,7 @@ class TestActionDatum extends Model implements IThingAction
         ?bool                 $is_root = null,
         ?string               $test_action_type = null,
         ?string               $test_action_name = null,
+        ?string               $parent_key = null,
         ?TypeOfTestActionStatus   $status = null
     )
     : Builder
@@ -300,15 +318,26 @@ class TestActionDatum extends Model implements IThingAction
             $build->where('test_action_data.test_action_name',$test_action_name);
         }
 
+        if ($parent_key) {
+            $build->where('test_action_data.parent_key',$parent_key);
+        }
+
         if ($status) {
             $build->where('test_action_data.action_status',$status);
         }
 
 
         /** @uses static::action_parent(),static::user_owner() */
-        $build->with('action_parent','user_owner','hooker_callbacks');
+        $build->with('action_parent','user_owner');
 
 
         return $build;
+    }
+
+    public static function runBasicOrLogic(TestActionDatum $action) :TypeOfTestActionStatus {
+        foreach ($action->test_action_content as $what) {
+            if ($what) {return TypeOfTestActionStatus::ACTION_SUCCESS;}
+        }
+        return TypeOfTestActionStatus::ACTION_FAIL;
     }
 }
