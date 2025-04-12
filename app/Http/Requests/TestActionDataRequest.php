@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\TestActionDatum;
-use App\Rules\ValidateActionCallbacks;
+use App\Rules\ValidateActionInnardClass;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -61,8 +61,7 @@ class TestActionDataRequest extends FormRequest
             "test_action_name"    => "nullable|string",
 
 
-            "test_action_run_class"    => ['nullable','string',new ValidateActionCallbacks],
-            "test_action_run_function"    =>  ['nullable','string',new ValidateActionCallbacks],
+            "test_action_innard_class"    => ['required','string',new ValidateActionInnardClass],
         ];
     }
 }

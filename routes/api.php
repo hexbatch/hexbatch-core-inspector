@@ -13,6 +13,7 @@ Route::prefix('things')->group(function () {
 
     Route::prefix('actions')->group(function () {
         Route::post('create', [ThingTestController::class, 'create_action'])->name('api.things.actions.create');
+        Route::post('create_canned', [ThingTestController::class, 'create_canned_action'])->name('api.things.actions.create_canned');
         Route::prefix('test_action')->group(function () {
             Route::get('show', [ThingTestController::class, 'show_action'])->name('api.things.actions.show');
             Route::put('update', [ThingTestController::class, 'update_action'])->name('api.things.actions.update');

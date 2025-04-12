@@ -43,6 +43,7 @@ return new class extends Migration
             $table->jsonb('test_action_content')->default(null)->nullable()->comment("holds the data for the action");
             $table->jsonb('test_action_constant')->default(null)->nullable()->comment("holds the constants for the action");
             $table->jsonb('test_action_tags')->default(null)->nullable()->comment("holds array of string tags");
+            $table->jsonb('test_action_innard_state')->default(null)->nullable()->comment("holds states for inner logic of tests");
         });
 
         DB::statement("CREATE TYPE type_of_test_action_status AS ENUM (
@@ -66,7 +67,7 @@ return new class extends Migration
                 ->default(null)->nullable()
                 ->comment("what kind of action is this");
 
-            $table->string('test_action_name',20)
+            $table->string('test_action_name',40)
                 ->unique()
                 ->default(null)->nullable()
                 ->comment("give this action a unique name for better tracing");
@@ -79,11 +80,9 @@ return new class extends Migration
             $table->index(['parent_action_id','parent_key'],'idx_parent_key_id');
 
 
-            $table->string('test_action_run_class')->nullable()->default(null)
-                ->comment('If set, this is the class that holds the run function');
+            $table->string('test_action_innard_class')->nullable(false)
+                ->comment('This is the namespaced class which implements the ITestActionInnards');
 
-            $table->string('test_action_run_function')->nullable()->default(null)
-                ->comment('If set, this is the function to call to run the action, takes one param, the model for this table');
 
         });
 
