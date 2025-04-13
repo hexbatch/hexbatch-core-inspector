@@ -73,6 +73,17 @@ class TestOptions
         return $this->extra_constant;
     }
 
+    public function applyGivenToEmpty(TestActionDatum $action) :void {
+        if(empty($this->async)) { $this->async = $action->test_action_async;}
+        if(empty($this->priority)) { $this->priority = $action->test_action_priority;}
+        if(empty($this->start_offset)) { $this->start_offset = $action->test_action_start_offset_seconds;}
+        if(empty($this->invalid_offset)) { $this->invalid_offset = $action->test_action_invalid_offset_seconds;}
+        if(empty($this->data_limit)) { $this->data_limit = $action->test_action_data_row_limit;}
+        if(empty($this->extra_tags)) { $this->extra_tags = $action->test_action_tags->getArrayCopy();}
+        if(empty($this->extra_constant)) { $this->extra_constant = $action->test_action_constant->getArrayCopy();}
+        if(empty($this->color)) { $this->color = $action->test_action_color;}
+    }
+
     public static function makeFromRequest(Request $request) : TestOptions {
         $async = $request->get('async');
         if ($async !== null) { $async = (bool)$async;}

@@ -332,12 +332,12 @@ class TestActionDatum extends Model implements IThingAction
 
 
     public static function buildTestAction(
-        ?int                  $id = null,
-        ?bool                 $is_root = null,
-        ?string               $test_action_type = null,
-        ?string               $test_action_name = null,
-        ?string               $parent_key = null,
-        ?TypeOfTestActionStatus   $status = null
+        ?int                    $me_id = null,
+        ?bool                   $is_root = null,
+        ?string                 $test_action_type = null,
+        ?string                 $test_action_name = null,
+        ?string                 $parent_key = null,
+        ?TypeOfTestActionStatus $status = null
     )
     : Builder
     {
@@ -350,8 +350,8 @@ class TestActionDatum extends Model implements IThingAction
                 " extract(epoch from  test_action_data.updated_at) as updated_at_ts")
         ;
 
-        if ($id) {
-            $build->where('test_action_data.id',$id);
+        if ($me_id) {
+            $build->where('test_action_data.id',$me_id);
         }
 
         if ($is_root !== null) {
@@ -386,6 +386,40 @@ class TestActionDatum extends Model implements IThingAction
 
 
         return $build;
+    }
+
+    /**
+     * Retrieve the model for a bound value.
+     *
+     * @param  mixed  $value
+     * @param  string|null  $field
+     * @return Model|null
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        $ret = null;
+        try {
+            if ($field) {
+                $ret = $this->where($field, $value)->first();
+            } else {
+                if (ctype_digit($value)) {
+                    $ret = $this->where('id', $value)->first();
+                } else {
+                    $ret = $this->where('test_action_name', $value)->first();
+                }
+            }
+            if ($ret) {
+                $ret = static::buildTestAction(me_id:$ret->id)->first();
+            }
+        } finally {
+            if (empty($ret)) {
+                throw new \RuntimeException(
+                   "Did not find test action with $field $value"
+                );
+            }
+        }
+        return $ret;
+
     }
 
 }

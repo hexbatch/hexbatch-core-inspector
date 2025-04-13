@@ -37,6 +37,16 @@ class ThingTestController extends Controller
         return response()->json(['success'=>true,'action'=>$node,'message'=>'created canned action']);
     }
 
+    public function create_cloned_action(TestActionDatum $action,Request $request) {
+
+        $options = TestOptions::makeFromRequest(request: $request);
+
+        $options->applyGivenToEmpty(action: $action);
+        $node = $action->getInnardClass()::create(options: $options);
+
+        return response()->json(['success'=>true,'action'=>$node,'message'=>'created cloned action']);
+    }
+
     public function update_action(TestActionDatum $datum,TestActionDataRequest $request) {
         $datum->fill($request->validated());
         $datum->save();
@@ -55,22 +65,9 @@ class ThingTestController extends Controller
     /**
      * @throws \Exception
      */
-    public function create_thing(Request $request) {
-        $name = $request->request->getString('action_name');
-        $type = $request->request->getString('action_type');
+    public function make_thing(TestActionDatum $action,Request $request) {
         $options = TestOptions::makeFromRequest(request: $request);
         $tags = $options->getExtraTags()??[];
-
-        $action = TestActionDatum::buildTestAction(
-            is_root: true, test_action_type: $type, test_action_name: $name,
-            status: TypeOfTestActionStatus::ACTION_PENDING
-        )
-            ->orderBy('id')
-            ->first();
-
-        if (!$action) {
-            throw new \InvalidArgumentException("Action is not defined for $type:$name");
-        }
 
         $hooker = Thing::buildFromAction(action: $action,extra_tags: $tags);
         return response()->json(['success'=>true,'hooker'=>$hooker,'message'=>'created thing']);
