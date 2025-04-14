@@ -100,8 +100,11 @@ class TestActionDatum extends Model implements IThingAction
     }
 
     public function action_parent() : BelongsTo {
-        return $this->belongsTo(TestActionDatum::class,'parent_action_id','id');
+        return $this->belongsTo(TestActionDatum::class,'parent_action_id','id')
+            /** @uses static::action_parent() */
+            ->with('action_parent');
     }
+
 
     public function getInnardClass() : ITestActionInnards|string {
         return $this->test_action_innard_class;
@@ -284,6 +287,15 @@ class TestActionDatum extends Model implements IThingAction
     public function getIntFromConstants(string $key) : int {
         $const = $this->getInitialConstantData()??[];
         return $const[$key]??0;
+    }
+
+    public function getRootAction() : TestActionDatum {
+
+        $it = $this;
+        while($it->action_parent) {
+            $it = $it->action_parent;
+        }
+        return $it;
     }
 
     public function setChildActionResult(IThingAction $child): void

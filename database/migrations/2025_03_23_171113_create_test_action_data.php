@@ -67,7 +67,7 @@ return new class extends Migration
                 ->default(null)->nullable()
                 ->comment("what kind of action is this");
 
-            $table->string('test_action_name',40)
+            $table->string('test_action_name',95)
                 ->unique()
                 ->default(null)->nullable()
                 ->comment("give this action a unique name for better tracing");

@@ -18,9 +18,20 @@ class TestOptions
         protected ?array $extra_constant = null,
         protected ?string $color = null,
         protected ?string $test_name = null,
+        protected ?string $base_name = null,
     )
     {
 
+    }
+
+    public function setBaseName(?string $base_name): void
+    {
+        $this->base_name = $base_name;
+    }
+
+    public function getBaseName(): ?string
+    {
+        return $this->base_name;
     }
 
     public function getAsync(): ?bool
