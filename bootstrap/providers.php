@@ -2,5 +2,6 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    Hexbatch\Things\HexbatchThingsProvider::class
+    App\Providers\FortifyServiceProvider::class,
+    Hexbatch\Things\HexbatchThingsProvider::class,
 ];

@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\TestActionDatum;
+use Hexbatch\Things\Interfaces\IThingOwner;
 use Illuminate\Http\Request;
 
 class TestOptions
@@ -19,15 +20,12 @@ class TestOptions
         protected ?string $color = null,
         protected ?string $test_name = null,
         protected ?string $base_name = null,
+        protected ?IThingOwner $owner = null
     )
     {
 
     }
 
-    public function setBaseName(?string $base_name): void
-    {
-        $this->base_name = $base_name;
-    }
 
     public function getBaseName(): ?string
     {
@@ -161,6 +159,10 @@ class TestOptions
         if ($options->getColor() !== null) { $action->test_action_color = $options->getColor();}
         if ($options->getTestName() !== null) { $action->test_action_name = $options->getTestName();}
 
+        if ($options->getOwner()) {
+            $action->owner_user_id = $options->getOwner()->getOwnerId();
+        }
+
         if ($options->getExtraConstant() !== null) {
             $action->test_action_constant = array_merge($action->test_action_constant?->getArrayCopy()??[],$options->getExtraConstant());}
 
@@ -169,5 +171,18 @@ class TestOptions
 
         if ($options->getExtraTags() !== null) {
             $action->test_action_tags = array_merge($action->test_action_tags?->getArrayCopy()??[],$options->getExtraTags());}
+
     }
+
+    public function getOwner(): ?IThingOwner
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?IThingOwner $owner): void
+    {
+        $this->owner = $owner;
+    }
+
+
 }

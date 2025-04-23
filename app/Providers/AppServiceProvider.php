@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Helpers\TestOwners\OwnerFromUser;
+use App\Models\TestActionDatum;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        OwnerFromUser::registerOwner();
+        TestActionDatum::registerAction();
     }
 }

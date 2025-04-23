@@ -16,7 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'thing_owner' => \App\Http\Middleware\SetThingOwner::class,
+            'thing_admin' => \App\Http\Middleware\CheckThingAdmin::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

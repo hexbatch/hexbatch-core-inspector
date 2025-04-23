@@ -3,15 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Helpers\TestOwners\OwnerFromUser;
 use Hexbatch\Things\Interfaces\IThingOwner;
-use Hexbatch\Things\Models\Thing;
-use Hexbatch\Things\Models\ThingCallback;
-use Hexbatch\Things\Models\ThingCallplate;
-use Hexbatch\Things\Models\ThingHook;
-use Hexbatch\Things\Models\ThingSetting;
-use Hexbatch\Things\Models\ThingStat;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -21,6 +17,11 @@ use Laravel\Sanctum\HasApiTokens;
  * @mixin \Illuminate\Database\Query\Builder
  * @property int id
  * @property string name
+ * @property string username
+ * @property string email
+ * @property string created_at
+ * @property UserFlag[] flags_of_user
+
  */
 class User extends Authenticatable implements IThingOwner
 {
@@ -60,39 +61,39 @@ class User extends Authenticatable implements IThingOwner
         ];
     }
 
-    const OWNER_TYPE = 'user';
+    public function flags_of_user() : HasMany {
+        return $this->hasMany(UserFlag::class,'flagged_user_id','id');
+    }
 
     public function getOwnerId(): int
     {
         return $this->id;
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
 
     public static function getOwnerType(): string
     {
-        return static::OWNER_TYPE;
+        return OwnerFromUser::getOwnerType();
     }
 
     public static function resolveOwner(int $owner_id): IThingOwner
     {
-        $ret = User::find($owner_id);
-        if (!$ret) {
-            throw new \InvalidArgumentException("user not found using $owner_id");
-        }
-        return $ret;
+        return OwnerFromUser::resolveOwner(owner_id: $owner_id);
     }
 
     public static function registerOwner(): void
     {
-        Thing::registerOwnerType(static::class);
-        ThingCallback::registerOwnerType(static::class);
-        ThingCallplate::registerOwnerType(static::class);
-        ThingHook::registerOwnerType(static::class);
-        ThingSetting::registerOwnerType(static::class);
-        ThingStat::registerOwnerType(static::class);
+        OwnerFromUser::registerOwner();
+    }
+
+    public function getName() :string {
+        return $this->name? : $this->username;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTags() : array {
+        return $this->flags_of_user()->orderBy('flag_name')->pluck('flag_name')->toArray();
     }
 }

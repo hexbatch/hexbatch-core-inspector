@@ -42,9 +42,9 @@ class SimpleRoot extends BaseTest
         if ($key === null) {
             $override_generations = $action->getIntFromConstants(static::GENERATIONS_KEY);
             if (!$override_generations) { $override_generations = static::DEFAULT_GENERATIONS;}
-            $node = SimpleChild::create(parent: $action,options:
-                            new TestOptions(extra_constant: [static::GENERATIONS_KEY=>$override_generations],base_name: $action->test_action_name)
-            );
+            $options = new TestOptions(extra_constant: [static::GENERATIONS_KEY=>$override_generations],base_name: $action->test_action_name);
+            $options->setOwner($action->getActionOwner());
+            $node = SimpleChild::create(parent: $action,options: $options);
             $child_tree = $node->getChildrenTree();
 
             $data[] = ['id' => $node->id, 'parent' => -1, 'title' => $node->test_action_name,'action'=>$node];

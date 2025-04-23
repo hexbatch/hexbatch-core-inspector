@@ -54,7 +54,7 @@ abstract class BaseTest implements ITestActionInnards
 
     public static function getDataByteRowsUsedInnard(TestActionDatum $action): int
     {
-        return  strlen(serialize($action->test_action_content->getArrayCopy()));
+        return  strlen(serialize(($action->test_action_content?->getArrayCopy()??[])));
     }
 
     public static function getActionRefInnard(TestActionDatum $action): int

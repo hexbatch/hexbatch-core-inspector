@@ -19,9 +19,11 @@
         "php": "^8.2",
         "ext-pdo": "*",
         "digitickets/lalit": "^3.4",
-        "laravel/framework": "^11.9",
+        "laravel/fortify": "^1.25",
+        "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "mattyrad/openapi-serialize": "^1.0",
         "relisten/forceutf8": "^1.1",
         "tormjens/eventy": "^0.8.0",
         "wikimedia/composer-merge-plugin": "^2.1"

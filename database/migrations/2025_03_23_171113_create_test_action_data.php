@@ -62,7 +62,7 @@ return new class extends Migration
                 ->default(null)->nullable()
                 ->comment("css color if used");
 
-            $table->string('test_action_type',20)
+            $table->string('test_action_type',30)
                 ->index()
                 ->default(null)->nullable()
                 ->comment("what kind of action is this");

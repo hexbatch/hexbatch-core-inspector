@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\TypeOfTestActionStatus;
 use App\Helpers\TestActions\SimpleRoot;
 use App\Helpers\TestOptions;
+use App\Helpers\Utilities;
 use App\Http\Requests\TestActionDataRequest;
 use App\Models\TestActionDatum;
+use Hexbatch\Things\Interfaces\IThingOwner;
 use Hexbatch\Things\Models\Thing;
 use Illuminate\Http\Request;
 
@@ -14,16 +15,19 @@ use Illuminate\Http\Request;
 class ThingTestController extends Controller
 {
 
-    public function create_action(TestActionDataRequest $request) {
+
+    public function create_action(TestActionDataRequest $request,IThingOwner $owner) {
         $node = new TestActionDatum();
         $node->fill($request->validated());
+        $node->owner_user_id = $owner->getOwnerId();
         $node->save();
         $node->refresh();
         return response()->json(['success'=>true,'action'=>$node,'message'=>'created action']);
     }
 
-    public function create_canned_action(Request $request) {
+    public function create_canned_action(Request $request,IThingOwner $owner) {
         $options = TestOptions::makeFromRequest(request: $request);
+        $options->setOwner($owner);
         switch ($template = $request->request->getString('action_template')) {
             case SimpleRoot::TEMPLATE_NAME: {
                 $node = SimpleRoot::create(options: $options);
@@ -37,11 +41,12 @@ class ThingTestController extends Controller
         return response()->json(['success'=>true,'action'=>$node,'message'=>'created canned action']);
     }
 
-    public function create_cloned_action(TestActionDatum $action,Request $request) {
+    public function create_cloned_action(TestActionDatum $action,IThingOwner $owner,Request $request) {
 
         $options = TestOptions::makeFromRequest(request: $request);
 
         $options->applyGivenToEmpty(action: $action);
+        $options->setOwner(owner: $owner);
         $node = $action->getInnardClass()::create(options: $options);
 
         return response()->json(['success'=>true,'action'=>$node,'message'=>'created cloned action']);
@@ -65,11 +70,11 @@ class ThingTestController extends Controller
     /**
      * @throws \Exception
      */
-    public function make_thing(TestActionDatum $action,Request $request) {
+    public function make_thing(TestActionDatum $action,IThingOwner $owner,Request $request) {
         $options = TestOptions::makeFromRequest(request: $request);
         $tags = $options->getExtraTags()??[];
 
-        $hooker = Thing::buildFromAction(action: $action,extra_tags: $tags);
+        $hooker = Thing::buildFromAction(action: $action,owner: $owner,extra_tags: $tags);
         return response()->json(['success'=>true,'hooker'=>$hooker,'message'=>'created thing']);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\TypeOfTestActionStatus;
+use App\Helpers\TestOwners\OwnerFromUser;
 use App\Interfaces\ITestActionInnards;
 use ArrayObject;
 use BlueM\Tree;
@@ -214,7 +215,8 @@ class TestActionDatum extends Model implements IThingAction
      */
     public function getActionOwner(): ?IThingOwner
     {
-        return $this->user_owner;
+        if (!$this->user_owner) {return null; }
+        return new OwnerFromUser(user: $this->user_owner);
     }
 
     public function getStartAt(): ?Carbon
