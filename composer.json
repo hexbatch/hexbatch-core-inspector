@@ -16,7 +16,7 @@
     },
     "license": "Apache-2.0",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-pdo": "*",
         "digitickets/lalit": "^3.4",
         "laravel/fortify": "^1.25",
