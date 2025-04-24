@@ -154,7 +154,11 @@ class TestActionDatum extends Model implements IThingAction
         return $this->test_action_priority;
     }
 
-    public static function getActionType(): string
+    public function getActionType() : string {
+        return static::getActionTypeStatic();
+    }
+
+    public static function getActionTypeStatic(): string
     {
         return static::ACTION_TYPE;
     }

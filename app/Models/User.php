@@ -70,10 +70,12 @@ class User extends Authenticatable implements IThingOwner
         return $this->id;
     }
 
-
-    public static function getOwnerType(): string
+    public function getOwnerType() : string {
+        return $this->id;
+    }
+    public static function getOwnerTypeStatic(): string
     {
-        return OwnerFromUser::getOwnerType();
+        return OwnerFromUser::getOwnerTypeStatic();
     }
 
     public static function resolveOwner(int $owner_id): IThingOwner

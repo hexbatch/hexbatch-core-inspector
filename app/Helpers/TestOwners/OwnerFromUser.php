@@ -13,7 +13,7 @@ use Hexbatch\Things\Models\ThingStat;
 
 class OwnerFromUser implements IThingOwner
 {
-    const OWNER_TYPE = 'user';
+    const string OWNER_TYPE = 'user';
     public function __construct(
         protected User $user
     )
@@ -34,8 +34,12 @@ class OwnerFromUser implements IThingOwner
         return $this->user->getTags();
     }
 
-    public static function getOwnerType(): string
+    public static function getOwnerTypeStatic(): string
     {
+        return static::OWNER_TYPE;
+    }
+
+    public function getOwnerType() : string {
         return static::OWNER_TYPE;
     }
 
