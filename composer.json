@@ -1,6 +1,7 @@
 {
     "name": "hexbatch/core-inspector",
     "type": "project",
+    "version": "1.0.0-pre",
     "description": "The core api for the hexbatch concept.",
     "keywords": ["laravel","core-api", "api","set","element","hexbatch"],
     "homepage": "https://github.com/hexbatch/hexbatch-core-inspector",

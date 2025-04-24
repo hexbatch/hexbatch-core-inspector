@@ -11,7 +11,7 @@ use Ramsey\Uuid\Uuid;
 
 class SimpleChild extends BaseTest
 {
-    const TEST_ACTION_NAME_STUB = 'sc-';
+    const string TEST_ACTION_NAME_STUB = 'sc-';
     public static function create(?TestActionDatum $parent = null,?TestOptions $options = null) : TestActionDatum
     {
         $root = '';

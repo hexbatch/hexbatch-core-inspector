@@ -12,6 +12,10 @@ Route::prefix('users')->group(function () {
     });
 });
 
+Route::prefix('app')->group(function () {
+    Route::get('about', [Api\AppController::class, 'about_app'])->name('api.app.about');
+});
+
 
 
 Route::middleware(['auth:sanctum','thing_owner'])->group(function () {

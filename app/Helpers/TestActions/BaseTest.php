@@ -21,7 +21,7 @@ abstract class BaseTest implements ITestActionInnards
 
     public static function runActionInnard(TestActionDatum $action, array $data): void
     {
-        $action->test_action_content = array_merge($data,$action->test_action_content->getArrayCopy());
+        $action->test_action_content = array_merge($data,$action->test_action_content?->getArrayCopy()??[]);
 
         foreach ($action->test_action_content as $what) {
             if ($what) {$action->action_status = TypeOfTestActionStatus::ACTION_SUCCESS; return;}
@@ -64,6 +64,6 @@ abstract class BaseTest implements ITestActionInnards
 
     public static function getActionResultInnard(TestActionDatum $action): array
     {
-        return $action->test_action_content->getArrayCopy();
+        return $action->test_action_content?->getArrayCopy()??[];
     }
 }
