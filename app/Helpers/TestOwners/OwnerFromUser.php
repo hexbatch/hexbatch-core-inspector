@@ -5,8 +5,6 @@ namespace App\Helpers\TestOwners;
 use App\Models\User;
 use Hexbatch\Things\Interfaces\IThingOwner;
 use Hexbatch\Things\Models\Thing;
-use Hexbatch\Things\Models\ThingCallback;
-use Hexbatch\Things\Models\ThingCallplate;
 use Hexbatch\Things\Models\ThingHook;
 use Hexbatch\Things\Models\ThingSetting;
 use Hexbatch\Things\Models\ThingStat;
@@ -55,8 +53,6 @@ class OwnerFromUser implements IThingOwner
     public static function registerOwner(): void
     {
         Thing::registerOwnerType(static::class);
-        ThingCallback::registerOwnerType(static::class);
-        ThingCallplate::registerOwnerType(static::class);
         ThingHook::registerOwnerType(static::class);
         ThingSetting::registerOwnerType(static::class);
         ThingStat::registerOwnerType(static::class);
