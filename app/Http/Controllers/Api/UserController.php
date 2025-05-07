@@ -47,8 +47,7 @@ class UserController extends Controller
             $token = $user->createToken($request->username)->plainTextToken;
 
 
-            return response()->json(
-                \MattyRad\OpenApi\Serializer::serialize(new LoginResponse(auth_token: $token)), CodeOf::HTTP_OK);
+            return response()->json(new LoginResponse(auth_token: $token), CodeOf::HTTP_OK);
         }
         catch (ValidationException $e) {
             throw new HexbatchTextException($e->getMessage(),$e->status,$e);
@@ -82,8 +81,7 @@ class UserController extends Controller
         try {
             $user = Utilities::get_logged_user();
 
-            return response()->json(
-                \MattyRad\OpenApi\Serializer::serialize(new UserResponse(user: $user) ), CodeOf::HTTP_OK);
+            return response()->json(new UserResponse(user: $user) , CodeOf::HTTP_OK);
         }  catch (\Exception $e) {
             $out_code = $e->getCode();
             if (!$e->getCode() || !ctype_digit($e->getCode())) { $out_code = CodeOf::HTTP_INTERNAL_SERVER_ERROR;}

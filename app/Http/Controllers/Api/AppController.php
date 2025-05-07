@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\HexbatchTextException;
 use App\Http\Controllers\Controller;
 use App\OpenApi\App\AboutResponse;
+use Hexbatch\Things\Models\Thing;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
 use OpenApi\Attributes\JsonContent;
@@ -29,8 +30,7 @@ class AppController extends Controller
     {
 
         try {
-            return response()->json(
-                \MattyRad\OpenApi\Serializer::serialize(new AboutResponse() ), CodeOf::HTTP_OK);
+            return response()->json(new AboutResponse() , CodeOf::HTTP_OK);
         }  catch (\Exception $e) {
             $out_code = $e->getCode();
             if (!$e->getCode() || !ctype_digit($e->getCode())) { $out_code = CodeOf::HTTP_INTERNAL_SERVER_ERROR;}
