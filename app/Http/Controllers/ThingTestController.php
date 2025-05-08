@@ -74,7 +74,7 @@ class ThingTestController extends Controller
         $options = TestOptions::makeFromRequest(request: $request);
         $tags = $options->getExtraTags()??[];
 
-        $hooker = Thing::buildFromAction(action: $action,owner: $owner,extra_tags: $tags);
-        return response()->json(['success'=>true,'hooker'=>$hooker,'message'=>'created thing']);
+        $callbacks = Thing::buildFromAction(action: $action,owner: $owner,extra_tags: $tags);
+        return response()->json(['success'=>true,'callbacks'=>$callbacks,'message'=>'created thing']);
     }
 }
