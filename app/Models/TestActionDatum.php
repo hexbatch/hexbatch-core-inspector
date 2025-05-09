@@ -144,8 +144,6 @@ class TestActionDatum extends Model implements IThingAction
             Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getActionRefInnard',$e->getMessage()));
             $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
             throw $e;
-        } finally {
-            $this->save();
         }
     }
 
@@ -176,8 +174,6 @@ class TestActionDatum extends Model implements IThingAction
             Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getChildrenTreeInnard',$e->getMessage()));
             $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
             throw $e;
-        } finally {
-            $this->save();
         }
     }
 
@@ -202,8 +198,6 @@ class TestActionDatum extends Model implements IThingAction
             Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getDataByteRowsUsedInnard',$e->getMessage()));
             $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
             throw $e;
-        } finally {
-            $this->save();
         }
     }
 
@@ -248,8 +242,6 @@ class TestActionDatum extends Model implements IThingAction
             Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::isMoreBuildingInnard',$e->getMessage()));
             $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
             throw $e;
-        } finally {
-            $this->save();
         }
     }
 
@@ -261,8 +253,6 @@ class TestActionDatum extends Model implements IThingAction
             Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getActionResultInnard',$e->getMessage()));
             $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
             throw $e;
-        } finally {
-            $this->save();
         }
     }
 
@@ -279,8 +269,6 @@ class TestActionDatum extends Model implements IThingAction
             Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getRenderHtmlInnard',$e->getMessage()));
             $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
             throw $e;
-        } finally {
-            $this->save();
         }
 
     }
