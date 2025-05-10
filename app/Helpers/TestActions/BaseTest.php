@@ -31,10 +31,7 @@ abstract class BaseTest implements ITestActionInnards
 
     }
 
-    public static function isMoreBuildingInnard(TestActionDatum $action): ?string
-    {
-        return null;
-    }
+
 
     public static function setChildActionResultInnard(TestActionDatum $action, IThingAction $child): void
     {
@@ -52,10 +49,6 @@ abstract class BaseTest implements ITestActionInnards
         return sprintf('<span style="color: %s">%s</span>',$action->test_action_color,$action->getActionRef());
     }
 
-    public static function getDataByteRowsUsedInnard(TestActionDatum $action): int
-    {
-        return  strlen(serialize(($action->test_action_content?->getArrayCopy()??[])));
-    }
 
     public static function getActionRefInnard(TestActionDatum $action): int
     {

@@ -12,8 +12,6 @@ use Hexbatch\Things\Interfaces\IThingAction;
 use Hexbatch\Things\Interfaces\IThingOwner;
 use Hexbatch\Things\Models\Thing;
 use Hexbatch\Things\Models\ThingHook;
-use Hexbatch\Things\Models\ThingSetting;
-use Hexbatch\Things\Models\ThingStat;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 
@@ -55,7 +53,7 @@ class TestActionDatum extends Model implements IThingAction
     protected $table = 'test_action_data';
     public $timestamps = false;
 
-    const ACTION_TYPE = 'tester';
+    const string ACTION_TYPE = 'tester';
 
     /**
      * The attributes that are mass assignable.
@@ -116,10 +114,6 @@ class TestActionDatum extends Model implements IThingAction
         return $this->action_status !== TypeOfTestActionStatus::ACTION_PENDING;
     }
 
-    public function isActionError(): bool
-    {
-        return $this->action_status === TypeOfTestActionStatus::ACTION_ERROR;
-    }
 
     public function isActionSuccess(): bool
     {
@@ -128,7 +122,8 @@ class TestActionDatum extends Model implements IThingAction
 
     public function isActionFail(): bool
     {
-        return $this->action_status === TypeOfTestActionStatus::ACTION_FAIL;
+        return $this->action_status === TypeOfTestActionStatus::ACTION_FAIL ||
+            $this->action_status === TypeOfTestActionStatus::ACTION_ERROR;
     }
 
     public function getActionId(): int
@@ -190,22 +185,7 @@ class TestActionDatum extends Model implements IThingAction
         }
     }
 
-    public function getDataByteRowsUsed(): int
-    {
-        try {
-            return $this->getInnardClass()::getDataByteRowsUsedInnard(action: $this);
-        } catch (\Exception|\Error $e) {
-            Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getDataByteRowsUsedInnard',$e->getMessage()));
-            $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
-            throw $e;
-        }
-    }
 
-    public function setLimitDataByteRows(int $limit): void
-    {
-        $this->test_action_data_row_limit = $limit;
-        $this->save();
-    }
 
     /**
      * @uses static::user_owner()
@@ -234,16 +214,6 @@ class TestActionDatum extends Model implements IThingAction
         return $this->test_action_async;
     }
 
-    public function isMoreBuilding(): ?string
-    {
-        try {
-            return $this->getInnardClass()::isMoreBuildingInnard(action: $this);
-        } catch (\Exception|\Error $e) {
-            Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::isMoreBuildingInnard',$e->getMessage()));
-            $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
-            throw $e;
-        }
-    }
 
     public function getActionResult(): array
     {
@@ -332,8 +302,6 @@ class TestActionDatum extends Model implements IThingAction
     {
         Thing::registerActionType(static::class);
         ThingHook::registerActionType(static::class);
-        ThingSetting::registerActionType(static::class);
-        ThingStat::registerActionType(static::class);
     }
 
 

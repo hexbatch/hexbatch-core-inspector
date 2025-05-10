@@ -6,8 +6,6 @@ use App\Models\User;
 use Hexbatch\Things\Interfaces\IThingOwner;
 use Hexbatch\Things\Models\Thing;
 use Hexbatch\Things\Models\ThingHook;
-use Hexbatch\Things\Models\ThingSetting;
-use Hexbatch\Things\Models\ThingStat;
 
 class OwnerFromUser implements IThingOwner
 {
@@ -54,7 +52,5 @@ class OwnerFromUser implements IThingOwner
     {
         Thing::registerOwnerType(static::class);
         ThingHook::registerOwnerType(static::class);
-        ThingSetting::registerOwnerType(static::class);
-        ThingStat::registerOwnerType(static::class);
     }
 }
