@@ -9,7 +9,9 @@ use App\Http\Requests\TestActionDataRequest;
 use App\Models\TestActionDatum;
 use Hexbatch\Things\Interfaces\IThingOwner;
 use Hexbatch\Things\Models\Thing;
+use Hexbatch\Things\OpenApi\Things\ThingResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 
 class ThingTestController extends Controller
@@ -74,7 +76,8 @@ class ThingTestController extends Controller
         $options = TestOptions::makeFromRequest(request: $request);
         $tags = $options->getExtraTags()??[];
 
-        $callbacks = Thing::buildFromAction(action: $action,owner: $owner,extra_tags: $tags);
-        return response()->json(['success'=>true,'callbacks'=>$callbacks,'message'=>'created thing']);
+        $root = Thing::buildFromAction(action: $action,owner: $owner,extra_tags: $tags);
+        $root->refresh();
+        return response()->json(new ThingResponse(thing:$root,b_include_hooks: true,b_include_children: true));
     }
 }

@@ -12,12 +12,12 @@ use Ramsey\Uuid\Uuid;
 class SimpleRoot extends BaseTest
 {
 
-    const TEMPLATE_NAME = 'simple_root';
+    const string TEMPLATE_NAME = 'simple_root';
 
-    const TEST_ACTION_NAME_STUB = 'sr-';
+    const string TEST_ACTION_NAME_STUB = 'sr-';
 
-    const GENERATIONS_KEY = 'generations';
-    const DEFAULT_GENERATIONS = 2;
+    const string GENERATIONS_KEY = 'generations';
+    const int DEFAULT_GENERATIONS = 2;
     public static function create(?TestActionDatum $parent = null,?TestOptions $options = null) : TestActionDatum
     {
         $node = new TestActionDatum();
@@ -25,7 +25,7 @@ class SimpleRoot extends BaseTest
         $node->test_action_async = false;
         $node->test_action_content = ['bedtime'=>21];
         $node->test_action_constant = ['roses'=>'blue','apples'=>2,'counter'=>1];
-        $node->test_action_tags = ['simple','hippos'];
+        $node->test_action_tags = ['simple','hippos','mark_pass'];
         $node->test_action_name = static::TEST_ACTION_NAME_STUB . Uuid::uuid4()->toString();
         $node->test_action_innard_class = static::class;
 

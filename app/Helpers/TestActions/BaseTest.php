@@ -27,6 +27,10 @@ abstract class BaseTest implements ITestActionInnards
             if ($what) {$action->action_status = TypeOfTestActionStatus::ACTION_SUCCESS; return;}
         }
 
+        if (in_array('mark_pass',$action->test_action_tags->getArrayCopy()) ) {$action->action_status = TypeOfTestActionStatus::ACTION_SUCCESS; return;}
+        if (in_array('mark_pending',$action->test_action_tags->getArrayCopy()) ) {$action->action_status = TypeOfTestActionStatus::ACTION_PENDING; return;}
+        if (in_array('mark_error',$action->test_action_tags->getArrayCopy()) ) {$action->action_status = TypeOfTestActionStatus::ACTION_ERROR; return;}
+
         $action->action_status = TypeOfTestActionStatus::ACTION_FAIL;
 
     }
@@ -50,12 +54,17 @@ abstract class BaseTest implements ITestActionInnards
     }
 
 
-    public static function getActionRefInnard(TestActionDatum $action): int
+    public static function getActionRefInnard(TestActionDatum $action): ?string
     {
-        return sprintf("%s %s #%s",$action->test_action_type,$action->test_action_name,$action->id);
+        return sprintf("%s %s #%s",$action->test_action_type??'test',$action->test_action_name,$action->id);
     }
 
     public static function getActionResultInnard(TestActionDatum $action): array
+    {
+        return $action->test_action_content?->getArrayCopy()??[];
+    }
+
+    public static function getPreRunDataInnard(TestActionDatum $action): array
     {
         return $action->test_action_content?->getArrayCopy()??[];
     }

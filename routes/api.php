@@ -36,3 +36,5 @@ Route::middleware(['auth:sanctum','thing_owner'])->group(function () {
 
     });
 });
+
+require app()->basePath('libs/hbc-things/routes/thing_api.php');

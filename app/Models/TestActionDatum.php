@@ -131,7 +131,7 @@ class TestActionDatum extends Model implements IThingAction
        return $this->id;
     }
 
-    public function getActionRef(): string
+    public function getActionRef(): ?string
     {
         try {
             return $this->getInnardClass()::getActionRefInnard(action: $this);
@@ -221,6 +221,17 @@ class TestActionDatum extends Model implements IThingAction
             return $this->getInnardClass()::getActionResultInnard(action: $this);
         } catch (\Exception|\Error $e) {
             Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getActionResultInnard',$e->getMessage()));
+            $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
+            throw $e;
+        }
+    }
+
+    public function getPreRunData(): array
+    {
+        try {
+            return $this->getInnardClass()::getPreRunDataInnard(action: $this);
+        } catch (\Exception|\Error $e) {
+            Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getPreRunDataInnard',$e->getMessage()));
             $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
             throw $e;
         }

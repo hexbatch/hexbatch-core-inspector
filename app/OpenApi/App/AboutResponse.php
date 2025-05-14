@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 /**
  * This can describe a user or employee or someone who is both
  */
-#[OA\Schema(schema: 'UserResponse',title: "User")]
+#[OA\Schema(schema: 'AboutResponse',title: "User")]
 class AboutResponse
 {
 

@@ -29,6 +29,9 @@ class UserResponse
     public ?string $email = null;
 
     #[OA\Property( title: 'Tags')]
+    /**
+     * @var string[] $user_tags
+     */
     public array $user_tags ;
 
     #[OA\Property( title: 'Registration Date', format: 'date-time',example: "2015-08-12T00:00:00-05:00")]

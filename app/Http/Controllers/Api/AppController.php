@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\HexbatchTextException;
 use App\Http\Controllers\Controller;
 use App\OpenApi\App\AboutResponse;
+use App\OpenApi\ErrorResponse;
 use Hexbatch\Things\Models\Thing;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -23,7 +24,9 @@ class AppController extends Controller
         security: [['bearerAuth' => []]],
         tags: ['app'],
         responses: [
-            new OA\Response( response: CodeOf::HTTP_OK, description: 'Gives information about the app',content: new JsonContent(ref: AboutResponse::class))
+            new OA\Response( response: CodeOf::HTTP_OK, description: 'Gives information about the app',content: new JsonContent(ref: AboutResponse::class)),
+            new OA\Response( response: CodeOf::HTTP_BAD_REQUEST, description: 'When something happened',
+                content: new JsonContent(ref: ErrorResponse::class, example: ["status"=>400,"message"=>"Unexpected."]))
         ]
     )]
     public function about_app() : JsonResponse

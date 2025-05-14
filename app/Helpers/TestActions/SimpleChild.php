@@ -16,14 +16,14 @@ class SimpleChild extends BaseTest
     {
         $root = '';
         if ($options?->getBaseName()) {
-            $root = '-'.$options->getBaseName();
+            $root = $options->getBaseName() .'-';
         }
 
         $node = new TestActionDatum();
         $node->parent_action_id = $parent?->id;
         $node->test_action_async = false;
         $node->test_action_constant = ['roses'=>'red','counter'=>1];
-        $node->test_action_tags = ['roses','hippos'];
+        $node->test_action_tags = ['roses','hippos','mark_pass'];
         $node->test_action_name = $root . static::TEST_ACTION_NAME_STUB . Uuid::uuid4()->toString();
         $node->test_action_innard_class = static::class;
 

@@ -10,7 +10,6 @@ use App\OpenApi\ErrorResponse;
 use App\OpenApi\User\Login\LoginParams;
 use App\OpenApi\User\Login\LoginResponse;
 use App\OpenApi\User\UserResponse;
-use Hexbatch\Things\Helpers\ThingUtilities;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OA;
