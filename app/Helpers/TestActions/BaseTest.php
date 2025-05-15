@@ -42,9 +42,11 @@ abstract class BaseTest implements ITestActionInnards
         $action->test_action_content = array_merge($child->getActionResult(),$action->getActionResult());
     }
 
-    public static function addDataBeforeRunInnard(TestActionDatum $action, array $data): void
+    public static function addDataBeforeRunInnard(TestActionDatum $action, ?array $data): void
     {
-        $action->test_action_content = array_merge($data,$action->test_action_content->getArrayCopy());
+        if (is_null($data)) {return;}
+
+        $action->test_action_content = array_merge($data,$action->test_action_content?->getArrayCopy()??[]);
     }
 
     public static function getRenderHtmlInnard(TestActionDatum $action): ?string
@@ -65,6 +67,11 @@ abstract class BaseTest implements ITestActionInnards
     }
 
     public static function getPreRunDataInnard(TestActionDatum $action): array
+    {
+        return $action->test_action_content?->getArrayCopy()??[];
+    }
+
+    public static function getDataSnapshotInnard(TestActionDatum $action): array
     {
         return $action->test_action_content?->getArrayCopy()??[];
     }

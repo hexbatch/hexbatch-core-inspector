@@ -237,6 +237,17 @@ class TestActionDatum extends Model implements IThingAction
         }
     }
 
+    public function getDataSnapshot(): array
+    {
+        try {
+            return $this->getInnardClass()::getPreRunDataInnard(action: $this);
+        } catch (\Exception|\Error $e) {
+            Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getPreRunDataInnard',$e->getMessage()));
+            $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
+            throw $e;
+        }
+    }
+
     public function getActionTags(): ?array
     {
         return $this->test_action_tags->getArrayCopy();

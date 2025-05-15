@@ -6,6 +6,7 @@ use App\Exceptions\HexbatchTextException;
 use App\Http\Controllers\Controller;
 use App\OpenApi\App\AboutResponse;
 use App\OpenApi\ErrorResponse;
+use Carbon\Carbon;
 use Hexbatch\Things\Models\Thing;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -29,7 +30,7 @@ class AppController extends Controller
                 content: new JsonContent(ref: ErrorResponse::class, example: ["status"=>400,"message"=>"Unexpected."]))
         ]
     )]
-    public function about_app() : JsonResponse
+    public function about_app()
     {
 
         try {

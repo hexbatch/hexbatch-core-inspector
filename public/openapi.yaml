@@ -172,7 +172,6 @@ paths:
           in: path
           description: 'uuid of the hook'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
@@ -218,7 +217,6 @@ paths:
           in: path
           description: 'uuid of the hook'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
@@ -259,6 +257,9 @@ paths:
       operationId: hbc-things.hooks.create
       requestBody:
         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HookParams'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/HookParams'
@@ -294,7 +295,6 @@ paths:
           in: path
           description: 'uuid of the hook'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
@@ -330,12 +330,14 @@ paths:
           in: path
           description: 'uuid of the hook'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
       requestBody:
         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HookParams'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/HookParams'
@@ -371,7 +373,6 @@ paths:
           in: path
           description: 'uuid of the hook'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
@@ -477,7 +478,6 @@ paths:
           in: path
           description: 'uuid of the thing'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
@@ -514,7 +514,6 @@ paths:
           in: path
           description: 'uuid of the thing'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
@@ -559,7 +558,6 @@ paths:
           in: path
           description: 'uuid of the thing'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
@@ -570,6 +568,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ThingResponse'
+        '400':
+          description: 'When not logged in'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                message: Unauthenticated.
+      security:
+        -
+          bearerAuth: []
+  '/api/hbc-things/v1/things/{thing}/resume':
+    put:
+      tags:
+        - thing
+      summary: 'Wakes up a thing if its waiting'
+      description: 'If a thing is waiting, it is dispatched again'
+      operationId: hbc-things.things.resume
+      parameters:
+        -
+          name: thing
+          in: path
+          description: 'uuid of the thing'
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '202':
+          description: 'The thing was resumed, here is the thing info'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingResponse'
+        '404':
+          description: 'The thing was not waiting'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '400':
           description: 'When not logged in'
           content:
@@ -596,10 +635,17 @@ paths:
           in: path
           description: 'uuid of the callback'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManualParams'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ManualParams'
       responses:
         '202':
           description: 'The callback'
@@ -617,7 +663,7 @@ paths:
                 status: 400
                 message: Unauthenticated.
   '/api/hbc-things/v1/callbacks/manual/{thing_callback}/question':
-    post:
+    get:
       tags:
         - callback
         - manual
@@ -630,7 +676,6 @@ paths:
           in: path
           description: 'uuid of the callback'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
@@ -663,7 +708,6 @@ paths:
           in: path
           description: 'uuid of the callback'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
@@ -693,6 +737,14 @@ paths:
       summary: 'Show a list of callbacks'
       description: ''
       operationId: hbc-things.callbacks.list
+      parameters:
+        -
+          name: 'Search params'
+          in: query
+          description: 'Optionally search'
+          allowEmptyValue: true
+          schema:
+            $ref: '#/components/schemas/CallbackSearchParams'
       responses:
         '200':
           description: 'The callback list'
@@ -726,7 +778,6 @@ paths:
           in: path
           description: 'uuid of the callback'
           required: true
-          allowEmptyValue: false
           schema:
             type: string
             format: uuid
@@ -909,6 +960,7 @@ components:
       type: string
       enum:
         - THING_BUILDING
+        - THING_WAITING
         - THING_PENDING
         - THING_RUNNING
         - THING_SHORT_CIRCUITED
@@ -941,7 +993,7 @@ components:
       type: object
     CallbackResponse:
       title: Callback
-      description: 'Show a Hook'
+      description: 'Show a callback'
       properties:
         uuid:
           title: Self
@@ -962,6 +1014,20 @@ components:
             -
               type: 'null'
           title: Error
+        alert_target:
+          oneOf:
+            -
+              $ref: '#/components/schemas/CallbackResponse'
+            -
+              type: 'null'
+          title: 'Alert target'
+        alerted_by:
+          oneOf:
+            -
+              $ref: '#/components/schemas/CallbackResponse'
+            -
+              type: 'null'
+          title: 'Alerted by'
         code:
           title: 'Code of response'
           type: integer
@@ -1010,6 +1076,131 @@ components:
             - 'null'
           format: datetime
           example: '2025-01-25T15:00:59-06:00'
+      type: object
+    CallbackSearchParams:
+      title: Callback
+      description: 'Search callbacks'
+      properties:
+        uuid:
+          title: Self
+          type:
+            - string
+            - 'null'
+          format: uuid
+        hook_uuid:
+          title: Hook
+          type:
+            - string
+            - 'null'
+          format: uuid
+        thing_uuid:
+          title: Thing
+          type:
+            - string
+            - 'null'
+          format: uuid
+        error_uuid:
+          title: Error
+          type:
+            - string
+            - 'null'
+          format: uuid
+        alert_uuid:
+          title: Alert
+          type:
+            - string
+            - 'null'
+          format: uuid
+        code_range_min:
+          title: 'Code range min'
+          type:
+            - integer
+            - 'null'
+        code_range_max:
+          title: 'Code range min'
+          type:
+            - integer
+            - 'null'
+        is_manual:
+          title: Manual
+          type:
+            - boolean
+            - 'null'
+        is_blocking:
+          title: Blocking
+          type:
+            - boolean
+            - 'null'
+        is_after:
+          title: After
+          type:
+            - boolean
+            - 'null'
+        is_sharing:
+          title: Sharing
+          type:
+            - boolean
+            - 'null'
+        status:
+          oneOf:
+            -
+              $ref: '#/components/schemas/TypeOfCallbackStatus'
+            -
+              type: 'null'
+          title: 'Status of callback'
+        hook_callback_type:
+          oneOf:
+            -
+              $ref: '#/components/schemas/TypeOfHookMode'
+            -
+              type: 'null'
+          title: 'Callback type'
+        ran_at_min:
+          title: 'Ran at range min'
+          description: 'Iso 8601 datetime string'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+        ran_at_max:
+          title: 'Ran at range max'
+          description: 'Iso 8601 datetime string'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+        created_at_min:
+          title: 'Created at range min'
+          description: 'Iso 8601 datetime string'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+        created_at_max:
+          title: 'Created at range max'
+          description: 'Iso 8601 datetime string'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+      type: object
+    ManualParams:
+      title: 'Manual callback entry'
+      description: 'Fill in a manual callback'
+      properties:
+        code:
+          title: Code
+          type: integer
+        data:
+          title: Data
+          type:
+            - array
+            - 'null'
+          items: {  }
       type: object
     ThingErrorResponse:
       title: Error
@@ -1097,32 +1288,46 @@ components:
         tags:
           title: 'Tags filter'
           description: 'Optional tags used to filter.'
-          type: array
+          type:
+            - array
+            - 'null'
           items: {  }
         hook_on:
           title: Active
           description: 'If false, the callback is not used until this is changed.'
-          type: boolean
+          type:
+            - boolean
+            - 'null'
         is_blocking:
           title: Blocking
           description: 'If true, then blocks.'
-          type: boolean
+          type:
+            - boolean
+            - 'null'
         is_writing:
           title: Writing
           description: 'If true writes to thing or thing parent.'
-          type: boolean
+          type:
+            - boolean
+            - 'null'
         is_sharing:
           title: Sharing
           description: 'If true the callback is shared among descendants.'
-          type: boolean
+          type:
+            - boolean
+            - 'null'
         is_manual:
           title: Manual
           description: 'If true the callback is manually entered.'
-          type: boolean
+          type:
+            - boolean
+            - 'null'
         is_after:
           title: After
           description: 'If true the callback is run after the thing is run.'
-          type: boolean
+          type:
+            - boolean
+            - 'null'
         callback_type:
           oneOf:
             -
@@ -1138,15 +1343,25 @@ components:
           type:
             - integer
             - 'null'
+        priority:
+          title: Priority
+          description: 'Order of blocking hooks run'
+          type:
+            - integer
+            - 'null'
         data_template:
           title: 'Data template'
           description: 'The keys that make up the query|body|form|event data'
-          type: array
+          type:
+            - array
+            - 'null'
           items: {  }
         header_template:
           title: 'Header template'
           description: 'The keys that make up the header for the http requests'
-          type: array
+          type:
+            - array
+            - 'null'
           items: {  }
         address:
           title: Address
@@ -1245,6 +1460,13 @@ components:
             - 'null'
           items:
             type: string
+        action_data:
+          title: 'Action data'
+          description: $action_data
+          type:
+            - array
+            - 'null'
+          items: {  }
         status:
           $ref: '#/components/schemas/TypeOfThingStatus'
         action_name:
@@ -1274,6 +1496,14 @@ components:
             - 'null'
         started_at:
           title: 'Started at'
+          description: 'Iso 8601 datetime string for when this was started'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+        ran_at:
+          title: 'Ran at'
           description: 'Iso 8601 datetime string for when this ran'
           type:
             - string
