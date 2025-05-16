@@ -19,7 +19,6 @@ services:
     volumes:
       - ./:/var/www/html
     environment:
-      XDEBUG_CONFIG: client_host=host.docker.internal
       APACHE_DOCUMENT_ROOT: /var/www/html/public
     depends_on:
       - db_hbci
@@ -69,7 +68,7 @@ services:
   redis_hbci:
     image: redis
     container_name: redis_hbci
-    command: redis-server --save 60 1 --loglevel warning --requirepass "${REDIS_PASSWORD}"
+    command: redis-server --loglevel warning --requirepass "${REDIS_PASSWORD}"
     volumes:
         - hbci_redis_data:/var/lib/redis/data
     ports:

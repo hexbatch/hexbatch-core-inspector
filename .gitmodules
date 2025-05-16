@@ -1,0 +1,3 @@
+[submodule "libs/hbc-things"]
+	path = libs/hbc-things
+	url = git@github.com:hexbatch/hbc-things.git

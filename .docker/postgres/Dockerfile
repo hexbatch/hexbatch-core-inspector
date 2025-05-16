@@ -1,4 +1,4 @@
-FROM postgis/postgis:16-3.4
+FROM postgis/postgis:17-3.5
 
 COPY ./init-user-db.sh /docker-entrypoint-initdb.d/init-user-db.sh
 
