@@ -103,6 +103,14 @@ paths:
       summary: 'List all the hooks registered to this owner'
       description: ''
       operationId: hbc-things.hooks.list
+      parameters:
+        -
+          name: 'Search params'
+          in: query
+          description: 'Optionally search'
+          allowEmptyValue: true
+          schema:
+            $ref: '#/components/schemas/HookSearchParams'
       responses:
         '200':
           description: 'The hook list'
@@ -110,6 +118,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HookCollectionResponse'
+        '422':
+          description: 'Validation fails'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '400':
           description: 'When not logged in'
           content:
@@ -130,6 +144,14 @@ paths:
       summary: 'List all the hooks'
       description: ''
       operationId: hbc-things.hooks.admin.list
+      parameters:
+        -
+          name: 'Search params'
+          in: query
+          description: 'Optionally search'
+          allowEmptyValue: true
+          schema:
+            $ref: '#/components/schemas/HookSearchParams'
       responses:
         '200':
           description: 'The hook list'
@@ -137,6 +159,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HookCollectionResponse'
+        '422':
+          description: 'Validation fails'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '400':
           description: 'When not logged in'
           content:
@@ -270,6 +298,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HookResponse'
+        '422':
+          description: 'Validation fails'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '400':
           description: 'When not logged in'
           content:
@@ -348,6 +382,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HookResponse'
+        '422':
+          description: 'Validation fails'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '400':
           description: 'When not logged in'
           content:
@@ -411,6 +451,14 @@ paths:
       summary: 'Lists top things that are owned by user'
       description: 'Shows tree status, times, progress'
       operationId: hbc-things.things.list
+      parameters:
+        -
+          name: 'Search things'
+          in: query
+          description: 'Optionally search'
+          allowEmptyValue: true
+          schema:
+            $ref: '#/components/schemas/ThingSearchParams'
       responses:
         '200':
           description: 'The things'
@@ -418,6 +466,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ThingCollectionResponse'
+        '422':
+          description: 'Validation fails'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '400':
           description: 'When not logged in'
           content:
@@ -434,9 +488,18 @@ paths:
     get:
       tags:
         - thing
+        - admin
       summary: 'Lists top things that are owned by user'
       description: 'Shows tree status, times, progress'
       operationId: hbc-things.things.admin.list
+      parameters:
+        -
+          name: 'Search things'
+          in: query
+          description: 'Optionally search'
+          allowEmptyValue: true
+          schema:
+            $ref: '#/components/schemas/ThingSearchParams'
       responses:
         '200':
           description: 'The things'
@@ -444,6 +507,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ThingCollectionResponse'
+        '422':
+          description: 'Validation fails'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '400':
           description: 'When not logged in'
           content:
@@ -752,6 +821,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CallbackCollectionResponse'
+        '422':
+          description: 'Validation fails'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: 'When not logged in'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 400
+                message: Unauthenticated.
+      security:
+        -
+          bearerAuth: []
+  /api/hbc-things/v1/callbacks/admin/list:
+    get:
+      tags:
+        - callback
+        - admin
+      summary: 'Show a list of callbacks'
+      description: ''
+      operationId: hbc-things.callbacks.admin.list
+      parameters:
+        -
+          name: 'Search params'
+          in: query
+          description: 'Optionally search'
+          allowEmptyValue: true
+          schema:
+            $ref: '#/components/schemas/CallbackSearchParams'
+      responses:
+        '200':
+          description: 'The callback list'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallbackCollectionResponse'
+        '422':
+          description: 'Validation fails'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '400':
           description: 'When not logged in'
           content:
@@ -1014,6 +1130,13 @@ components:
             -
               type: 'null'
           title: Error
+        shared_source:
+          oneOf:
+            -
+              $ref: '#/components/schemas/CallbackResponse'
+            -
+              type: 'null'
+          title: 'Shared callback source'
         alert_target:
           oneOf:
             -
@@ -1030,7 +1153,9 @@ components:
           title: 'Alerted by'
         code:
           title: 'Code of response'
-          type: integer
+          type:
+            - integer
+            - 'null'
         response:
           title: 'Response of callback'
           description: $response
@@ -1078,7 +1203,7 @@ components:
           example: '2025-01-25T15:00:59-06:00'
       type: object
     CallbackSearchParams:
-      title: Callback
+      title: 'Callback search'
       description: 'Search callbacks'
       properties:
         uuid:
@@ -1155,6 +1280,18 @@ components:
             -
               type: 'null'
           title: 'Callback type'
+        owner_type:
+          title: 'Owner type filter'
+          description: 'Optional type of owner used to filter. Type must exist when set'
+          type:
+            - string
+            - 'null'
+        owner_id:
+          title: 'Owner id filter'
+          description: 'Optional owner used to filter.'
+          type:
+            - string
+            - 'null'
         ran_at_min:
           title: 'Ran at range min'
           description: 'Iso 8601 datetime string'
@@ -1369,6 +1506,18 @@ components:
           type:
             - string
             - 'null'
+        filter_owner_type:
+          title: 'Owner type filter'
+          description: 'Filter to run on things by this owner type. Type must exist when set'
+          type:
+            - string
+            - 'null'
+        filter_owner_id:
+          title: 'Owner id filter'
+          description: 'Filter to run on things by one owner.'
+          type:
+            - string
+            - 'null'
       type: object
     HookResponse:
       title: Hook
@@ -1405,6 +1554,138 @@ components:
               title: Callbacks
               description: 'Callbacks generated'
           type: object
+    HookSearchParams:
+      title: 'Thing search'
+      description: 'Search things'
+      properties:
+        uuid:
+          title: Self
+          type:
+            - string
+            - 'null'
+          format: uuid
+        action_type:
+          title: 'Action type filter'
+          description: 'Optional type of action used to filter. Type must exist when set'
+          type:
+            - string
+            - 'null'
+        action_id:
+          title: 'Action id filter'
+          description: 'Optional action used to filter.'
+          type:
+            - string
+            - 'null'
+        owner_type:
+          title: 'Owner type filter'
+          description: 'Optional type of owner used to filter. Type must exist when set'
+          type:
+            - string
+            - 'null'
+        owner_id:
+          title: 'Owner id filter'
+          description: 'Optional owner used to filter.'
+          type:
+            - string
+            - 'null'
+        filter_owner_type:
+          title: 'Owner type filter'
+          description: 'Filter to run on things by this owner type. Type must exist when set'
+          type:
+            - string
+            - 'null'
+        filter_owner_id:
+          title: 'Owner id filter'
+          description: 'Filter to run on things by one owner.'
+          type:
+            - string
+            - 'null'
+        hook_on:
+          title: Active
+          description: 'If false, the callback is not used until this is changed.'
+          type:
+            - boolean
+            - 'null'
+        is_blocking:
+          title: Blocking
+          description: 'If true, then blocks.'
+          type:
+            - boolean
+            - 'null'
+        is_writing:
+          title: Writing
+          description: 'If true writes to thing or thing parent.'
+          type:
+            - boolean
+            - 'null'
+        is_sharing:
+          title: Sharing
+          description: 'If true the callback is shared among descendants.'
+          type:
+            - boolean
+            - 'null'
+        is_manual:
+          title: Manual
+          description: 'If true the callback is manually entered.'
+          type:
+            - boolean
+            - 'null'
+        is_after:
+          title: After
+          description: 'If true the callback is run after the thing is run.'
+          type:
+            - boolean
+            - 'null'
+        tags:
+          title: Tags
+          description: $tags
+          type:
+            - array
+            - 'null'
+          items: {  }
+        callback_type:
+          oneOf:
+            -
+              $ref: '#/components/schemas/TypeOfCallback'
+              description: 'Callback type'
+            -
+              type: 'null'
+          title: 'Callback type'
+          description: 'Callback type'
+        mode:
+          oneOf:
+            -
+              $ref: '#/components/schemas/TypeOfHookMode'
+              description: 'Callback type'
+            -
+              type: 'null'
+          title: 'Hook mode'
+          description: 'Callback type'
+        ttl_shared_min:
+          title: 'Minimum Seconds this shared is kept'
+          description: 'Used only if shared'
+          type:
+            - integer
+            - 'null'
+        ttl_shared_max:
+          title: 'Max Seconds this shared is kept'
+          description: 'Used only if shared'
+          type:
+            - integer
+            - 'null'
+        priority_min:
+          title: 'Minimum Priority'
+          description: 'Order of blocking hooks run'
+          type:
+            - integer
+            - 'null'
+        priority_max:
+          title: 'Max Priority'
+          description: 'Order of blocking hooks run'
+          type:
+            - integer
+            - 'null'
+      type: object
     ThingCollectionResponse:
       title: Callbacks
       description: 'A collection of hooks'
@@ -1475,6 +1756,9 @@ components:
         action_ref:
           title: 'Action ref'
           type: string
+        async:
+          title: Async
+          type: boolean
         hooks:
           oneOf:
             -
@@ -1505,6 +1789,119 @@ components:
         ran_at:
           title: 'Ran at'
           description: 'Iso 8601 datetime string for when this ran'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+      type: object
+    ThingSearchParams:
+      title: 'Thing search'
+      description: 'Search things'
+      properties:
+        uuid:
+          title: Self
+          type:
+            - string
+            - 'null'
+          format: uuid
+        error_uuid:
+          title: Error
+          type:
+            - string
+            - 'null'
+          format: uuid
+        async:
+          title: Async
+          type:
+            - boolean
+            - 'null'
+        is_root:
+          title: Root
+          type:
+            - boolean
+            - 'null'
+        action_type:
+          title: 'Action type filter'
+          description: 'Optional type of action used to filter. Type must exist when set'
+          type:
+            - string
+            - 'null'
+        action_id:
+          title: 'Action id filter'
+          description: 'Optional action used to filter.'
+          type:
+            - string
+            - 'null'
+        owner_type:
+          title: 'Owner type filter'
+          description: 'Optional type of owner used to filter. Type must exist when set'
+          type:
+            - string
+            - 'null'
+        owner_id:
+          title: 'Owner id filter'
+          description: 'Optional owner used to filter.'
+          type:
+            - string
+            - 'null'
+        tags:
+          title: Tags
+          description: $tags
+          type:
+            - array
+            - 'null'
+          items: {  }
+        status:
+          oneOf:
+            -
+              $ref: '#/components/schemas/TypeOfThingStatus'
+            -
+              type: 'null'
+          title: 'Status of hook'
+        ran_at_min:
+          title: 'Ran at range min'
+          description: 'Iso 8601 datetime string'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+        ran_at_max:
+          title: 'Ran at range max'
+          description: 'Iso 8601 datetime string'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+        created_at_min:
+          title: 'Created at range min'
+          description: 'Iso 8601 datetime string'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+        created_at_max:
+          title: 'Created at range max'
+          description: 'Iso 8601 datetime string'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+        started_at_min:
+          title: 'Started at range min'
+          description: 'Iso 8601 datetime string'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+        started_at_max:
+          title: 'Started at range max'
+          description: 'Iso 8601 datetime string'
           type:
             - string
             - 'null'

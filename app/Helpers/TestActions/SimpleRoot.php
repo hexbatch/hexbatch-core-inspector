@@ -3,6 +3,7 @@
 namespace App\Helpers\TestActions;
 
 
+use App\Enums\TypeOfTestActionStatus;
 use App\Helpers\TestOptions;
 use App\Models\TestActionDatum;
 use BlueM\Tree;
@@ -62,6 +63,14 @@ class SimpleRoot extends BaseTest
 
         }
         return null;
+    }
+
+    public static function runActionInnard(TestActionDatum $action, array $data): void
+    {
+//        throw new \RuntimeException("test thing error");
+        parent::runActionInnard(action: $action,data: $data);
+       // $action->action_status = TypeOfTestActionStatus::ACTION_ERROR;
+
     }
 
 

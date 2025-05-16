@@ -126,6 +126,11 @@ class TestActionDatum extends Model implements IThingAction
             $this->action_status === TypeOfTestActionStatus::ACTION_ERROR;
     }
 
+    public function isActionError(): bool
+    {
+        return $this->action_status === TypeOfTestActionStatus::ACTION_ERROR ;
+    }
+
     public function getActionId(): int
     {
        return $this->id;

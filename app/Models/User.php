@@ -4,10 +4,12 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Helpers\TestOwners\OwnerFromUser;
+use Hexbatch\Things\Enums\TypeOfOwnerGroup;
 use Hexbatch\Things\Interfaces\IThingOwner;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -71,7 +73,7 @@ class User extends Authenticatable implements IThingOwner
     }
 
     public function getOwnerType() : string {
-        return $this->id;
+        return OwnerFromUser::OWNER_TYPE;
     }
     public static function getOwnerTypeStatic(): string
     {
@@ -90,6 +92,41 @@ class User extends Authenticatable implements IThingOwner
 
     public function getName() :string {
         return $this->name? : $this->username;
+    }
+
+    /**
+     * @param \Illuminate\Contracts\Database\Query\Builder $builder
+     */
+    public function setReadGroupBuilding($builder, string $connecting_table_name,
+                                         string $connecting_owner_type_column, string $connecting_owner_id_column,
+                                         TypeOfOwnerGroup $hint,?string $alias = null
+    ) :void
+    {
+        if (!$alias) {$alias = 'gu';}
+        $owner_type = $this->getOwnerType();
+        if ($hint !== TypeOfOwnerGroup::HOOK_CALLBACK_CREATION) {
+            $builder->join("users as $alias",
+                /** @param JoinClause $join */
+                function ($join)
+                use ($owner_type, $connecting_table_name, $connecting_owner_type_column, $connecting_owner_id_column) {
+                    $join
+                        ->on('gu.id', '=', "$connecting_table_name.$connecting_owner_id_column")
+                        /** @param \Illuminate\Database\Query\Builder $query */
+                        ->where("$connecting_table_name.$connecting_owner_type_column", $owner_type);
+                }
+            );
+        } else {
+            $builder->leftJoin("users as $alias",
+                /** @param JoinClause $join */
+                function ($join)
+                use ($owner_type, $connecting_table_name, $connecting_owner_type_column, $connecting_owner_id_column) {
+                    $join
+                        ->on('gul.id', '=', "$connecting_table_name.$connecting_owner_id_column")
+                        /** @param \Illuminate\Database\Query\Builder $query */
+                        ->where("$connecting_table_name.$connecting_owner_type_column", $owner_type);
+                }
+            );
+        }
     }
 
     /**
