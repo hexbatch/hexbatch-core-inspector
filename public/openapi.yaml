@@ -1251,6 +1251,11 @@ components:
           type:
             - boolean
             - 'null'
+        is_manual_notice:
+          title: 'Manual notice'
+          type:
+            - boolean
+            - 'null'
         is_blocking:
           title: Blocking
           type:
