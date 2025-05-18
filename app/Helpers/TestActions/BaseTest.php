@@ -14,7 +14,7 @@ abstract class BaseTest implements ITestActionInnards
 {
 
     abstract public static function create(?TestActionDatum $parent = null,?TestOptions $options = null) : TestActionDatum;
-    public static function getChildrenTreeInnard(TestActionDatum $action, ?string $key = null): ?Tree
+    public static function getChildrenTreeInnard(TestActionDatum $action): ?Tree
     {
         return null;
     }

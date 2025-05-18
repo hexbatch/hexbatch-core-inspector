@@ -162,14 +162,24 @@ class TestActionDatum extends Model implements IThingAction
     }
 
     /**
-     * @param string|null $key
      * @return Tree|null
      *@uses static::action_parent()
      */
-    public function getChildrenTree(?string $key = null): ?Tree
+    public function getChildrenTree(): ?Tree
     {
         try {
             return $this->getInnardClass()::getChildrenTreeInnard(action: $this);
+        } catch (\Exception|\Error $e) {
+            Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getChildrenTreeInnard',$e->getMessage()));
+            $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;
+            throw $e;
+        }
+    }
+
+    /** @return IThingAction[] */
+    public function getMoreSiblingActions() : array {
+        try {
+            return $this->getInnardClass()::getMoreSiblingActionsInnard(action: $this);
         } catch (\Exception|\Error $e) {
             Log::warning(sprintf("Got error when calling %s : %s ", $this->test_action_innard_class.'::getChildrenTreeInnard',$e->getMessage()));
             $this->action_status = TypeOfTestActionStatus::ACTION_ERROR;

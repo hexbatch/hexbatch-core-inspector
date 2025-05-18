@@ -11,7 +11,8 @@ interface ITestActionInnards
 {
     public static function create(?TestActionDatum $parent = null,?TestOptions $options = null) : TestActionDatum;
 
-    public static function getChildrenTreeInnard(TestActionDatum $action,?string $key = null) : ?Tree;
+    public static function getChildrenTreeInnard(TestActionDatum $action) : ?Tree;
+    public static function getMoreSiblingActionsInnard(TestActionDatum $action): array;
 
     public static function runActionInnard(TestActionDatum $action,array $data): void;
     public static function getActionResultInnard(TestActionDatum $action): array;

@@ -3,10 +3,10 @@
 namespace App\Helpers\TestActions;
 
 
-use App\Enums\TypeOfTestActionStatus;
 use App\Helpers\TestOptions;
 use App\Models\TestActionDatum;
 use BlueM\Tree;
+use Hexbatch\Things\Interfaces\IThingAction;
 use Ramsey\Uuid\Uuid;
 
 
@@ -63,6 +63,12 @@ class SimpleRoot extends BaseTest
 
         }
         return null;
+    }
+
+    /** @return IThingAction[] */
+    public static function getMoreSiblingActionsInnard(TestActionDatum $action): array
+    {
+        return [];
     }
 
     public static function runActionInnard(TestActionDatum $action, array $data): void

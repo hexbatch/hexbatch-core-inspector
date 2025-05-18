@@ -6,6 +6,7 @@ namespace App\Helpers\TestActions;
 use App\Helpers\TestOptions;
 use App\Models\TestActionDatum;
 use BlueM\Tree;
+use Hexbatch\Things\Interfaces\IThingAction;
 use Ramsey\Uuid\Uuid;
 
 
@@ -37,22 +38,37 @@ class SimpleChild extends BaseTest
         return $node;
     }
 
-    public static function getChildrenTreeInnard(TestActionDatum $action, ?string $key = null): ?Tree
+    /** @return IThingAction[] */
+    public static function getMoreSiblingActionsInnard(TestActionDatum $action): array
     {
-        if ($key === null) {
-            //see how many generations we are on > 1
-            $generations = $action->getIntFromConstants(SimpleRoot::GENERATIONS_KEY);
-            if ($generations > 1) {
-                $options = new TestOptions(extra_constant: [SimpleRoot::GENERATIONS_KEY=> $generations -1],base_name: $action->getRootAction()->test_action_name);
-                $options->setOwner($action->getActionOwner());
-                $node = SimpleChild::create(parent: $action, options: $options);
-                $data[] = ['id' => $node->id, 'parent' => -1, 'title' => $node->test_action_name,'action'=>$node];
+        $ret = [];
+        $generations = $action->getIntFromConstants(SimpleRoot::GENERATIONS_KEY);
+        if ($generations > 1) {
+            $options = new TestOptions(
+                extra_tags: ['nu_thing'],
+                extra_constant: [SimpleRoot::GENERATIONS_KEY=> $generations -100],
+                base_name: 'spot-'.$action->getRootAction()->test_action_name);
+            $options->setOwner($action->getActionOwner());
 
-                return new Tree(
-                    $data,
-                    ['rootId' => -1]
-                );
-            }
+            $ret[] = SimpleChild::create(parent: $action, options: $options);
+        }
+        return $ret;
+    }
+
+    public static function getChildrenTreeInnard(TestActionDatum $action): ?Tree
+    {
+        //see how many generations we are on > 1
+        $generations = $action->getIntFromConstants(SimpleRoot::GENERATIONS_KEY);
+        if ($generations > 1) {
+            $options = new TestOptions(extra_constant: [SimpleRoot::GENERATIONS_KEY=> $generations -1],base_name: $action->getRootAction()->test_action_name);
+            $options->setOwner($action->getActionOwner());
+            $node = SimpleChild::create(parent: $action, options: $options);
+            $data[] = ['id' => $node->id, 'parent' => -1, 'title' => $node->test_action_name,'action'=>$node];
+
+            return new Tree(
+                $data,
+                ['rootId' => -1]
+            );
         }
         return null;
     }
