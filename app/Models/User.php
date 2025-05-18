@@ -108,9 +108,9 @@ class User extends Authenticatable implements IThingOwner
             $builder->join("users as $alias",
                 /** @param JoinClause $join */
                 function ($join)
-                use ($owner_type, $connecting_table_name, $connecting_owner_type_column, $connecting_owner_id_column) {
+                use ($owner_type, $connecting_table_name, $connecting_owner_type_column, $connecting_owner_id_column,$alias) {
                     $join
-                        ->on('gu.id', '=', "$connecting_table_name.$connecting_owner_id_column")
+                        ->on("$alias.id", '=', "$connecting_table_name.$connecting_owner_id_column")
                         /** @param \Illuminate\Database\Query\Builder $query */
                         ->where("$connecting_table_name.$connecting_owner_type_column", $owner_type);
                 }
@@ -119,9 +119,9 @@ class User extends Authenticatable implements IThingOwner
             $builder->leftJoin("users as $alias",
                 /** @param JoinClause $join */
                 function ($join)
-                use ($owner_type, $connecting_table_name, $connecting_owner_type_column, $connecting_owner_id_column) {
+                use ($owner_type, $connecting_table_name, $connecting_owner_type_column, $connecting_owner_id_column,$alias) {
                     $join
-                        ->on('gul.id', '=', "$connecting_table_name.$connecting_owner_id_column")
+                        ->on("$alias.id", '=', "$connecting_table_name.$connecting_owner_id_column")
                         /** @param \Illuminate\Database\Query\Builder $query */
                         ->where("$connecting_table_name.$connecting_owner_type_column", $owner_type);
                 }
