@@ -7,7 +7,7 @@ use Hexbatch\Things\Interfaces\ICallResponse;
 use Hexbatch\Things\Interfaces\IHookCode;
 use Symfony\Component\HttpFoundation\Response as CodeOf;
 
-class SimpleCall implements IHookCode
+class SimpleCall implements IHookCode,ICallResponse
 {
 
     protected array $internal_data = [];
