@@ -8,6 +8,7 @@ enum TypeOfTestActionStatus : string {
     case ACTION_SUCCESS = 'action_success';
     case ACTION_FAIL = 'action_fail';
     case ACTION_ERROR = 'action_error';
+    case ACTION_WAITING = 'action_waiting';
 
 
     public static function tryFromInput(string|int|bool|null $test ) : TypeOfTestActionStatus {

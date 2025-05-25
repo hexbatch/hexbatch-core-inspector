@@ -58,7 +58,7 @@ abstract class BaseTest implements ITestActionInnards
 
     public static function getActionRefInnard(TestActionDatum $action): ?string
     {
-        return sprintf("%s %s #%s",$action->test_action_type??'test',$action->test_action_name,$action->id);
+        return $action->ref_uuid;
     }
 
     public static function getActionResultInnard(TestActionDatum $action): array

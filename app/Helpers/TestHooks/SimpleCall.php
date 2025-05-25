@@ -32,4 +32,9 @@ class SimpleCall implements IHookCode,ICallResponse
         $node->internal_data = array_merge($header,$body,['some_constant'=>'apples']);
         return $node;
     }
+
+    public function getWaitTimeoutInSeconds(): ?int
+    {
+        return null;
+    }
 }

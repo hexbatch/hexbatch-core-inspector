@@ -22,6 +22,11 @@ class OwnerFromUser implements IThingOwner
         return $this->user->getOwnerId();
     }
 
+    public function getOwnerUuid() : string
+    {
+        return $this->user->getOwnerUuid();
+    }
+
     public function getName(): string
     {
         return $this->user->getName();
@@ -56,6 +61,15 @@ class OwnerFromUser implements IThingOwner
         $ret = User::find($owner_id);
         if (!$ret) {
             throw new \InvalidArgumentException("user not found using $owner_id");
+        }
+        return new OwnerFromUser(user: $ret);
+    }
+
+    public static function resolveOwnerFromUiid(string $uuid) : IThingOwner {
+        /** @var User|null $ret */
+        $ret = User::where('ref_uuid',$uuid)->first();
+        if (!$ret) {
+            throw new \InvalidArgumentException("user not found using $uuid");
         }
         return new OwnerFromUser(user: $ret);
     }

@@ -43,6 +43,7 @@ use Illuminate\Support\Facades\Log;
  * @property string|ITestActionInnards test_action_innard_class
  * @property string created_at
  * @property string updated_at
+ * @property string ref_uuid
  *
  * @property User user_owner
  * @property TestActionDatum|null action_parent
@@ -120,6 +121,16 @@ class TestActionDatum extends Model implements IThingAction
         return $this->action_status === TypeOfTestActionStatus::ACTION_SUCCESS;
     }
 
+    public function isActionWaiting(): bool
+    {
+        return $this->action_status === TypeOfTestActionStatus::ACTION_WAITING;
+    }
+
+    public function getWaitTimeout() : ?int
+    {
+        return null;
+    }
+
     public function isActionFail(): bool
     {
         return $this->action_status === TypeOfTestActionStatus::ACTION_FAIL ||
@@ -134,6 +145,11 @@ class TestActionDatum extends Model implements IThingAction
     public function getActionId(): int
     {
        return $this->id;
+    }
+
+    public function getActionUuid() : string
+    {
+        return $this->ref_uuid;
     }
 
     public function getActionRef(): ?string
@@ -331,6 +347,16 @@ class TestActionDatum extends Model implements IThingAction
         $ret = TestActionDatum::find($action_id);
         if (!$ret) {
             throw new \InvalidArgumentException("Action not found using $action_id");
+        }
+        return $ret;
+    }
+
+    public static function resolveActionFromUiid(string $uuid) : IThingAction {
+
+        /** @var TestActionDatum|null $ret */
+        $ret = TestActionDatum::where('ref_uuid',$uuid)->first();
+        if (!$ret) {
+            throw new \InvalidArgumentException("action not found using $uuid");
         }
         return $ret;
     }

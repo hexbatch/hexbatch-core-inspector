@@ -1201,6 +1201,12 @@ components:
             - 'null'
           format: datetime
           example: '2025-01-25T15:00:59-06:00'
+        wait_seconds:
+          title: 'Wait in seconds'
+          description: 'When the callback tells the thing to wait'
+          type:
+            - integer
+            - 'null'
       type: object
     CallbackSearchParams:
       title: 'Callback search'
@@ -1337,6 +1343,11 @@ components:
         code:
           title: Code
           type: integer
+        wait_in_seconds:
+          title: 'Wait timeout'
+          type:
+            - integer
+            - 'null'
         data:
           title: Data
           type:
@@ -1746,9 +1757,9 @@ components:
             - 'null'
           items:
             type: string
-        action_data:
+        action_info:
           title: 'Action data'
-          description: $action_data
+          description: $action_info
           type:
             - array
             - 'null'
@@ -1760,6 +1771,12 @@ components:
           type: string
         action_ref:
           title: 'Action ref'
+          type: string
+        owner_name:
+          title: 'Owner name'
+          type: string
+        owner_ref:
+          title: 'Owner ref'
           type: string
         async:
           title: Async
@@ -1793,6 +1810,14 @@ components:
           example: '2025-01-25T15:00:59-06:00'
         ran_at:
           title: 'Ran at'
+          description: 'Iso 8601 datetime string for when this ran'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
+        thing_wait_until_at:
+          title: 'Wait until '
           description: 'Iso 8601 datetime string for when this ran'
           type:
             - string
@@ -1863,7 +1888,15 @@ components:
               $ref: '#/components/schemas/TypeOfThingStatus'
             -
               type: 'null'
-          title: 'Status of hook'
+          title: 'Status of thing'
+        wait_until:
+          title: 'Waiting until this time'
+          description: 'Thing status is waiting and is waiting before this Iso 8601 datetime string'
+          type:
+            - string
+            - 'null'
+          format: datetime
+          example: '2025-01-25T15:00:59-06:00'
         ran_at_min:
           title: 'Ran at range min'
           description: 'Iso 8601 datetime string'

@@ -22,6 +22,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string username
  * @property string email
  * @property string created_at
+ * @property string ref_uuid
  * @property UserFlag[] flags_of_user
 
  */
@@ -72,6 +73,10 @@ class User extends Authenticatable implements IThingOwner
         return $this->id;
     }
 
+    public function getOwnerUuid() : string {
+        return $this->ref_uuid;
+    }
+
     public function getOwnerType() : string {
         return OwnerFromUser::OWNER_TYPE;
     }
@@ -83,6 +88,10 @@ class User extends Authenticatable implements IThingOwner
     public static function resolveOwner(int $owner_id): IThingOwner
     {
         return OwnerFromUser::resolveOwner(owner_id: $owner_id);
+    }
+
+    public static function resolveOwnerFromUiid(string $uuid) : IThingOwner {
+        return OwnerFromUser::resolveOwnerFromUiid(uuid: $uuid);
     }
 
     public static function registerOwner(): void
