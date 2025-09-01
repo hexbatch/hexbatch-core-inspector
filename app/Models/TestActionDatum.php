@@ -296,7 +296,7 @@ class TestActionDatum extends Model implements IThingAction
 
     }
 
-    public function getInitialConstantData(): ?array
+    public function getInitialConstantData(): array
     {
         return $this->test_action_constant?->getArrayCopy();
     }
@@ -459,4 +459,8 @@ class TestActionDatum extends Model implements IThingAction
 
     }
 
+    public function getActionName(): ?string
+    {
+        return $this->test_action_name;
+    }
 }
